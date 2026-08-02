@@ -1,0 +1,149 @@
+import { extractSign, extractExponent, extractCoefficient, assembleIEEE, decodeIEEE } from "./ieee754";
+
+export interface IEEEResult {
+    decimal: number;
+    sign: number;
+    exponentBits: string;
+    coefficient: string;
+    binary: string;
+    hex: string;
+    decodedValue: number;
+    specialCase: string | null;
+}
+
+// checks if the decimal is a special case (NaN, Infinity, etc)
+// returns the label as a string if it is, or null if its just a normal number
+function checkSpecialCase(decimal: number): string | null {
+    // NaN check, has its own special function since NaN !== NaN normally
+    if (Number.isNaN(decimal)) return "NaN";
+
+    // positive and negative infinity
+    if (decimal === Infinity) {
+        return "Infinity";
+    }
+    if (decimal === -Infinity) {
+        return "-Infinity";
+    }
+
+    // -0 needs Object.is since -0 === 0 is true normally (cant tell them apart with ===)
+    if (Object.is(decimal, -0)) {
+        return "-0";
+    }
+    if (decimal === 0) {
+        return "+0";
+    }
+
+    // overflow/underflow: check if number is too big or too small to fit
+    // in float32 range. these are the max/min values float32 can represent
+    const absVal = Math.abs(decimal);
+    const FLOAT32_MAX = 3.4028235e38;
+    const FLOAT32_MIN_NORMAL = 1.1754944e-38;
+
+    if (absVal > FLOAT32_MAX) {
+        return "Overflow";
+    }
+      
+    if (absVal < FLOAT32_MIN_NORMAL) {
+        return "Underflow";
+    }
+       
+    // no special case, its a normal number, proceed with regular conversion
+    return null;
+}
+
+// TEMPORARY?
+function binaryToHex(binary: string): string {
+    // pad binary to a multiple of 4 (hex digits represent 4 bits each)
+    const paddedBinary = binary.padStart(Math.ceil(binary.length / 4) * 4, "0");
+    let hex = "";
+    for (let i = 0; i < paddedBinary.length; i += 4) {
+        const chunk = paddedBinary.slice(i, i + 4);
+        hex += parseInt(chunk, 2).toString(16).toUpperCase();
+    }
+    return hex;
+}
+
+// builds the result object for special cases (NaN, Infinity, etc)
+// uses predefined bit patterns instead of the normal math functions
+// since things like Math.log2(Infinity) would break
+function buildSpecialCaseResult(decimal: number, specialCase: string): IEEEResult {
+    let sign = 0;
+    let exponentBits = "00000000";
+    let coefficient = "0".repeat(23);
+    let decodedValue: number = decimal; // default, will override below per case
+
+    if (specialCase === "NaN") {
+        // exponent all 1s + nonzero coefficient = NaN (this is the actual IEEE rule)
+        exponentBits = "11111111";
+        coefficient = "1" + "0".repeat(22);
+        decodedValue = NaN;
+    } else if (specialCase === "Infinity") {
+        // exponent all 1s + coefficient all 0s = infinity
+        exponentBits = "11111111";
+        decodedValue = Infinity;
+    } else if (specialCase === "-Infinity") {
+        sign = 1;
+        exponentBits = "11111111";
+        decodedValue = -Infinity;
+    } else if (specialCase === "-0") {
+        sign = 1;
+        decodedValue = -0;
+    } else if (specialCase === "+0") {
+        sign = 0;
+        decodedValue = 0;
+    } else if (specialCase === "Overflow") {
+        // too big to fit, rounds to infinity (keeping the original sign)
+        sign = decimal < 0 ? 1 : 0;
+        exponentBits = "11111111";
+        decodedValue = sign === 1 ? -Infinity : Infinity;
+    } else if (specialCase === "Underflow") {
+        // too small to fit, flushes down to zero (keeping the original sign)
+        sign = decimal < 0 ? 1 : 0;
+        exponentBits = "00000000";
+        decodedValue = sign === 1 ? -0 : 0;
+    }
+
+    const binary = sign.toString() + exponentBits + coefficient;
+    const hex = binaryToHex(binary);
+
+    return {
+        decimal,
+        sign,
+        exponentBits,
+        coefficient,
+        binary,
+        hex,
+        decodedValue, // hardcoded per case above, not calculated with decodeIEEE
+        specialCase,
+    };
+}
+
+// main function
+export function convertDecimalToIEEE(decimal: number): IEEEResult {
+    const specialCase = checkSpecialCase(decimal);
+
+    // if its a special case, build the result using the fixed bit patterns
+    // and skip the normal math functions entirely (they'd break on these values)
+    if (specialCase !== null) {
+        return buildSpecialCaseResult(decimal, specialCase);
+    }
+
+    // normal case: call our ieee754 functions in order
+    const sign = extractSign(decimal);
+    const exponent = extractExponent(decimal);
+    const coefficient = extractCoefficient(decimal);
+    const binary = assembleIEEE(sign, exponent, coefficient);
+    const hex = binaryToHex(binary);
+    const decodedValue = decodeIEEE(binary);
+
+    return {
+        decimal,
+        sign,
+        exponentBits: exponent.toString(2).padStart(8, "0"),
+        coefficient,
+        binary,
+        hex,
+        decodedValue,
+        specialCase: null,
+    };
+}
