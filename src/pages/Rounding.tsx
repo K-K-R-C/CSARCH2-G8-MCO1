@@ -14,9 +14,12 @@ export const Rounding: React.FC = () => {
   const [digits, setDigits] = useState("4");
   const [results, setResults] = useState<RoundingResults | null>(null);
   const [inputType, setInputType] = useState<InputType>("decimal");
+  const [error, setError] = useState<string | null>(null);
 
   const handleRound = () => {
       try {
+          setError(null);
+
           const result = roundAll(
               inputValue,
               parseInt(digits, 10),
@@ -25,8 +28,9 @@ export const Rounding: React.FC = () => {
 
           setResults(result);
       }
-      catch {
+      catch(error) {
           setResults(null);
+          setError((error as Error).message);
       }
   };
 
@@ -70,6 +74,13 @@ export const Rounding: React.FC = () => {
           <Button onClick={handleRound} className="w-full">
             Demonstrate Rounding
           </Button>
+
+          {error && (
+              <p className="text-red-400 text-sm font-medium">
+                  {error}
+              </p>
+          )}
+
         </Card>
 
         <Card title="Rounding Method Results" className="md:col-span-2 space-y-3">
