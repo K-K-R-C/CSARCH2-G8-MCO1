@@ -6,7 +6,6 @@ import SectionHeader from "../components/shared/SectionHeader";
 import Input from "../components/shared/Input";
 import Button from "../components/shared/Button";
 import OutputPanel from "../components/shared/OutputPanel";
-import { groupBits } from "../utils/binary";
 
 export default function Converter() {
   // state #1: what the user is currently typing in the input box
@@ -67,19 +66,19 @@ export default function Converter() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <OutputPanel label="Sign Bit" value={result.sign} badge="1 bit" />
-                <OutputPanel label="Exponent (Biased)" value={groupBits(result.exponentBits)} badge="8 bits" />
-                <OutputPanel label="Coefficient / Mantissa" value={groupBits(result.coefficient)} badge="23 bits" />
+                <OutputPanel label="Exponent (Biased)" value={groupBitsFromRight(result.exponentBits)} badge="8 bits" />
+                <OutputPanel label="Coefficient / Mantissa" value={groupBitsFromRight(result.coefficient)} badge="23 bits" />
               </div>
 
               <OutputPanel
                 label="Complete Spaced Binary"
-                value={`${result.sign} ${groupBits(result.exponentBits)} ${groupBits(result.coefficient)}`}
+                value={`${result.sign} ${groupBitsFromRight(result.exponentBits)} ${groupBitsFromRight(result.coefficient)}`}
                 badge="32 bits"
                 highlight
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <OutputPanel label="Hexadecimal" value={groupBits(result.hex)} badge="8 Hex Digits" />
+                <OutputPanel label="Hexadecimal" value={groupBitsFromRight(result.hex)} badge="8 Hex Digits" />
                 <OutputPanel label="Decoded Verification" value={result.decodedValue} badge="Float32 Decoded" />
               </div>
             </div>
@@ -92,4 +91,14 @@ export default function Converter() {
       </div>
     </div>
   );
+}
+
+// local version of groupBits that groups from the right instead of the left
+// (so the "odd" leftover chunk, if any, ends up at the start not the end)
+// kept local here
+function groupBitsFromRight(bits: string, groupSize: number = 4): string {
+  const reversed = bits.split("").reverse().join("");
+  const regex = new RegExp(`.{1,${groupSize}}`, "g");
+  const chunks = reversed.match(regex) ?? [];
+  return chunks.map((chunk) => chunk.split("").reverse().join("")).reverse().join(" ");
 }
