@@ -51,7 +51,6 @@ function handleConvert() {
       <SectionHeader
         title="Module 1: Converter Engine"
         description="Convert decimal values into IEEE-754 decimal 32-bit single-precision floating point binary and hexadecimal formats."
-        badge="Member 1 Engine"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
