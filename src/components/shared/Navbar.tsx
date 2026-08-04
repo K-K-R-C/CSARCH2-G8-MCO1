@@ -18,10 +18,9 @@ export const Navbar: React.FC = () => {
             M4
           </div>
           <div>
-            <h1 className="text-base font-bold text-slate-100 tracking-tight leading-tight group-hover:text-blue-400 transition-colors">
+            <h1 className="text-[10px] font-bold text-slate-100 tracking-tight leading-tight group-hover:text-blue-400 transition-colors whitespace-nowrap">
               IEEE-754 Decimal32
             </h1>
-            <p className="text-[11px] text-slate-400 font-mono">CSARCH2 Group 8 • Machine 4</p>
           </div>
         </NavLink>
 
