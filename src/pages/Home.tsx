@@ -91,11 +91,7 @@ export const Home: React.FC = () => {
           {modules.map((mod) => (
             <Card key={mod.path} className={`flex flex-col justify-between border bg-slate-900/60 ${mod.color}`}>
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] uppercase font-bold font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-                  </span>
-                </div>
-                <h3 className="text-lg font-bold text-slate-100 mb-2">{mod.title}</h3>
+                <h3 className="text-lg font-bold text-slate-100 mb-2 mt-1">{mod.title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed mb-4">{mod.description}</p>
                 <ul className="space-y-1.5 mb-6 text-xs text-slate-300">
                   {mod.features.map((feat, fIdx) => (
