@@ -10,7 +10,7 @@ import type { RoundingResults, InputType } from "../utils/rounding";
 
 
 export const Rounding: React.FC = () => {
-  const [inputValue, setInputValue] = useState("123.456789");
+  const [inputValue, setInputValue] = useState("");
   const [digits, setDigits] = useState("4");
   const [results, setResults] = useState<RoundingResults | null>(null);
   const [inputType, setInputType] = useState<InputType>("decimal");
