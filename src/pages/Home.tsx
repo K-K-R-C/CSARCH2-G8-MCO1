@@ -50,11 +50,9 @@ export const Home: React.FC = () => {
     <div className="space-y-8 max-w-6xl mx-auto">
       {/* Hero Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950/60 to-slate-900 border border-slate-800 p-8 sm:p-10 shadow-2xl">
-        <div className="relative z-10 max-w-3xl space-y-4">
+        <div className="relative z-10 max-w-3xl mx-auto text-center space-y-4">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400">
             <span>CSARCH2 Group 8</span>
-            <span>•</span>
-            <span>Machine 4 Assigned</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
             Decimal 32-bit Floating-Point Machine
@@ -62,7 +60,7 @@ export const Home: React.FC = () => {
           <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
             An interactive simulator for IEEE-754 decimal single-precision conversions, rounding modes, and step-by-step subtraction & division arithmetic.
           </p>
-          <div className="flex flex-wrap gap-4 pt-2">
+          <div className="flex flex-wrap gap-4 pt-2 justify-center">
             <Link
               to="/converter"
               className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all shadow-lg shadow-blue-900/40"
@@ -84,7 +82,6 @@ export const Home: React.FC = () => {
         <SectionHeader
           title="Machine Modules & Feature Breakdown"
           description="Select a module below to inspect or run calculations."
-          badge="Group 8"
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
