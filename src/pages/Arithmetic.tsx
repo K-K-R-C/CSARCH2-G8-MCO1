@@ -64,7 +64,7 @@ export const Arithmetic: React.FC = () => {
     if (operation === "subtraction") {
       finalVal = valA - valB;
     } else {
-      finalVal = valA / valB;
+      finalVal = Math.fround(valA / valB);
     }
 
     const binA = decimalToBinary(valA);
