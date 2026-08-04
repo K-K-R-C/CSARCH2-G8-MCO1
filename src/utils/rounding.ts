@@ -1,6 +1,10 @@
+// Specifies whether the input number is interpreted as decimal or binary.
 export type InputType = "decimal" | "binary";
+
+// Available rounding methods supported by the rounding engine.
 export type RoundingMethod = "chop" | "up" | "down" | "nearest-even";
 
+// Stores the output of each rounding method.
 export interface RoundingResults
 {
     chop: string;
@@ -10,9 +14,10 @@ export interface RoundingResults
 }
 
 
-/**
- * Returns all four rounding methods.
- */
+
+// Applies all supported rounding methods to the given input.
+// Returns the results of chopping, rounding up, rounding down,
+// and round-to-nearest-even.
 export function roundAll(value: string, digits: number, inputType: InputType): RoundingResults
 {
     validateInput(value, digits, inputType);
@@ -25,6 +30,8 @@ export function roundAll(value: string, digits: number, inputType: InputType): R
     };
 }
 
+// Performs truncation by keeping only the required number of
+// significant digits/bits and removing the remaining digits.
 export function chop(value: string, digits: number, inputType: InputType): string
 {
     if (inputType === "decimal")
@@ -35,6 +42,9 @@ export function chop(value: string, digits: number, inputType: InputType): strin
     return chopBinary(value, digits);
 }
 
+// Round the value towards positive infinity.
+// For decimal input, positive values increase if discarded digits exist.
+// For binary input, positive values increase if discarded bits exist.
 export function roundUp (value: string, digits: number, inputType: InputType): string
 {
     if (inputType === "decimal")
@@ -45,6 +55,9 @@ export function roundUp (value: string, digits: number, inputType: InputType): s
     return roundUpBinary(value, digits);
 }
 
+// Round the value towards negative infinity.
+// For decimal input, negative values decrease if discarded digits exist.
+// For binary input, negative values decrease if discarded bits exist.
 export function roundDown (value: string, digits: number, inputType: InputType): string
 {
     if (inputType === "decimal")
@@ -55,6 +68,7 @@ export function roundDown (value: string, digits: number, inputType: InputType):
     return roundDownBinary(value, digits);
 }
 
+// Rounds the value using the IEEE 754 round-to-nearest, ties-to-even rule.
 export function roundNearestEven(value: string,digits: number, inputType: InputType): string
 {
     if (inputType === "decimal")
@@ -69,6 +83,8 @@ export function roundNearestEven(value: string,digits: number, inputType: InputT
 /**
  * DECIMAL ROUNDING
  */
+
+// Performs decimal chopping by truncating all digits beyond the specified number of significant digits.
 function chopDecimal(value: string, digits: number): string
 {
     const info = getDecimalInfo(value);
@@ -83,6 +99,7 @@ function chopDecimal(value: string, digits: number): string
     return rebuildDecimal(info.sign, kept, info.decimalIndex, digits);
 }
 
+// Rounds a decimal number toward positive infinity.
 function roundUpDecimal(value: string, digits: number): string
 {
     const info = getDecimalInfo(value);
@@ -106,6 +123,7 @@ function roundUpDecimal(value: string, digits: number): string
     return rebuildDecimal(info.sign, truncated, info.decimalIndex, digits);
 }
 
+// Rounds a decimal number toward negative infinity.
 function roundDownDecimal(value: string, digits: number): string
 {
     const info = getDecimalInfo(value);
@@ -128,6 +146,7 @@ function roundDownDecimal(value: string, digits: number): string
     return rebuildDecimal(info.sign, truncated, info.decimalIndex, digits);
 }
 
+// Rounds a decimal number using the round-to-nearest, ties-to-even method.
 function roundNearestEvenDecimal(value: string, digits: number): string
 {
     const info = getDecimalInfo(value);
@@ -176,6 +195,8 @@ function roundNearestEvenDecimal(value: string, digits: number): string
 /**
  * BINARY ROUNDING
  */
+
+// Performs binary chopping by truncating all bits beyond the specified number of significant bits.
 function chopBinary(value: string, digits: number): string
 {
     const info = getBinaryInfo(value);
@@ -190,6 +211,7 @@ function chopBinary(value: string, digits: number): string
     return rebuildBinary(info.sign, kept, info.binaryPoint);
 }
 
+// Round a binary number toward positive infinity.
 function roundUpBinary(value: string, digits: number): string
 {
     const info = getBinaryInfo(value);
@@ -212,6 +234,7 @@ function roundUpBinary(value: string, digits: number): string
     return rebuildBinary(info.sign,kept,info.binaryPoint);
 }
 
+// Rounds a binary number toward negative infinity.
 function roundDownBinary(value: string, digits: number): string
 {
     const info = getBinaryInfo(value);
@@ -234,6 +257,7 @@ function roundDownBinary(value: string, digits: number): string
     return rebuildBinary(info.sign,kept,info.binaryPoint);
 }
 
+// Rounds a binary number using the round-to-nearest, ties-to-even method.
 function roundNearestEvenBinary(value: string, digits: number): string
 {
     const info = getBinaryInfo(value);
@@ -278,6 +302,9 @@ function roundNearestEvenBinary(value: string, digits: number): string
 /**
  * HELPER FUNCTIONS
  */
+
+// Validates the user input before any rounding operation.
+// Ensures that the value format is correct and the requested number of digits is valid.
 function validateInput(value: string, digits: number, inputType: InputType): void
 {
     if (value.trim() === "")
@@ -306,6 +333,7 @@ function validateInput(value: string, digits: number, inputType: InputType): voi
     }
 }
 
+// Separates a number into its sign, integer part, and fractional part for easier processing.
 function splitNumber(value: string)
 {
     let sign = "";
@@ -325,9 +353,7 @@ function splitNumber(value: string)
     };
 }
 
-/**
- * Extracts decimal information needed for rounding.
- */
+// Extracts decimal information needed for rounding.
 function getDecimalInfo(value: string)
 {
     const { sign, integer, fraction } = splitNumber(value);
@@ -350,21 +376,13 @@ function getDecimalInfo(value: string)
 
     return {
         sign,
-
-        // All meaningful digits
-        digits,
-
-        // Number of significant digits
-        significantDigits: digits.length,
-
-        // Position where decimal point belongs
-        decimalIndex: integer.length - leadingZeros
+        digits, // All meaningful digits
+        significantDigits: digits.length, // Number of significant digits
+        decimalIndex: integer.length - leadingZeros // Position where decimal point belongs
     };
 }
 
-/**
- * Rebuilds a decimal number after rounding.
- */
+// Rebuilds a decimal number after rounding.
 function rebuildDecimal(sign: string,digits: string,decimalIndex: number,originalDigits: number): string
 {
     let point = decimalIndex;
@@ -378,20 +396,15 @@ function rebuildDecimal(sign: string,digits: string,decimalIndex: number,origina
 
     let result: string;
 
-    // Decimal point before all digits
-    if (point <= 0)
+    if (point <= 0) // Decimal point before all digits
     {
         result ="0." + "0".repeat(Math.abs(point)) + digits;
     }
-
-    // Decimal point after all digits
-    else if (point >= digits.length)
+    else if (point >= digits.length) // Decimal point after all digits
     {
         result = digits + "0".repeat(point - digits.length);
     }
-
-    // Decimal point inside digits
-    else
+    else // Decimal point inside digits
     {
         result = digits.substring(0, point) + "." + digits.substring(point);
     }
@@ -411,6 +424,7 @@ function rebuildDecimal(sign: string,digits: string,decimalIndex: number,origina
     return sign + result;
 }
 
+// Extracts binary information needed for rounding.
 function getBinaryInfo(value: string)
 {
     const { sign, integer, fraction } = splitNumber(value);
@@ -425,6 +439,7 @@ function getBinaryInfo(value: string)
     };
 }
 
+// Rebuilds a binary number after rounding.
 function rebuildBinary(sign: string,bits: string,binaryPoint: number): string
 {
     if (bits.length === 0)
@@ -446,6 +461,7 @@ function rebuildBinary(sign: string,bits: string,binaryPoint: number): string
     return (sign +bits.substring(0, point) + "." + bits.substring(point));
 }
 
+// Adds one to a binary string while handling carries.
 function incrementBinary(bits: string): string
 {
     let result = bits.split("");
@@ -477,6 +493,7 @@ function incrementBinary(bits: string): string
     return result.join("");
 }
 
+// Adds one to a decimal digit string while handling carries.
 function incrementDigits(value: string): string
 {
     let digits = value.split("");
@@ -510,6 +527,7 @@ function incrementDigits(value: string): string
     return digits.join("");
 }
 
+// Checks whether the discarded portion contains any non-zero digit or bit.
 function hasNonZero(value: string): boolean
 {
     return value.includes("1") || /[1-9]/.test(value);
