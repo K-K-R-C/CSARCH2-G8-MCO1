@@ -61,6 +61,57 @@ Executes subtraction and division on IEEE 754 single-precision operands with a f
 
 **Output:** Step-by-step solution and final result (including special cases) in decimal, binary (with proper spacing), and hexadecimal
 
+
+## Current Implementation
+
+**Done:**
+- Working Vite/React site with modern UI styling via Tailwind CSS.
+- IEEE-754 decimal 32-bit single-precision encoding implementation.
+- Converter special cases: NaN, ±Infinity, ±0, overflow, and underflow detection.
+- All 4 rounding methods implemented for both decimal and binary inputs.
+- GRS (Guard, Round, Sticky) subtraction and division logic, complete with step-by-step trace generation and ties-to-even rounding.
+- Arithmetic special cases handled: NaN propagation, infinity arithmetic, division by zero, etc.
+- Support for both Decimal and IEEE Hexadecimal operand inputs for arithmetic operations.
+- Clean separation of concerns between React UI components (`src/components/`, `src/pages/`) and core arithmetic logic (`src/utils/`).
+
+**Not done yet / known gaps:**
+- Only subtraction and division are implemented (as per Machine 4 specification) — no addition or multiplication.
+- Need to double-check the repo's visibility before submission.
+
+## Program Structure
+
+```text
+index.html              Vite HTML entry point
+package.json            Project metadata and scripts
+vite.config.ts          Vite and Tailwind configuration
+src/
+  main.tsx              React entry point
+  App.tsx               Root layout and routing configuration
+  index.css             Tailwind import and global styles
+  pages/
+    Home.tsx            Landing page and module overview
+    Converter.tsx       Decimal to IEEE-754 converter UI
+    Rounding.tsx        Rounding methods UI
+    Arithmetic.tsx      Subtraction & Division arithmetic UI
+  components/
+    ArithmeticDivision/     Division-specific UI components
+    ArithmeticSubtraction/  Subtraction-specific UI components
+    Converter/              Converter-specific UI components
+    StepViewer/             Step-by-step trace viewer components
+    shared/                 Reusable UI components (Card, Headers, etc.)
+  utils/
+    decimalConverter.ts Decimal parsing and extraction logic
+    ieee754.ts          IEEE-754 encoding/decoding utilities
+    rounding.ts         Implementation of the 4 rounding algorithms
+    subtraction.ts      GRS subtraction algorithm and step generation
+    division.ts         GRS division algorithm and step generation
+    specialCases.ts     Handling logic for NaN, infinity, overflow, etc.
+    binary.ts           Binary string formatting and manipulation
+    hex.ts              Hexadecimal conversion helpers
+```
+
+The `src/utils/` folder contains pure TypeScript logic for the arithmetic, conversion, and rounding engines, keeping them completely separate from the React layer. The `src/pages/` and `src/components/` folders act as thin wrappers: they grab form input, call into `utils/`, and render the results.
+
 ## Test Cases & Screenshots
 Screenshots covering all specification cases (normal, special, and edge cases) for each module are available in the PDF uploaded in the repo.
 
