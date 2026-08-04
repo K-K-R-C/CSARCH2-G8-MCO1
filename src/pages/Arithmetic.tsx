@@ -10,8 +10,8 @@ import { decimalToHex, hexToBinary } from "../utils/hex";
 import { groupBits, decimalToBinary } from "../utils/binary";
 
 export const Arithmetic: React.FC = () => {
-  const [operandA, setOperandA] = useState("13.25");
-  const [operandB, setOperandB] = useState("5.5");
+  const [operandA, setOperandA] = useState("");
+  const [operandB, setOperandB] = useState("");
   const [operation, setOperation] = useState<"subtraction" | "division">("subtraction");
 
   const [resultDecimal, setResultDecimal] = useState<string | null>(null);
