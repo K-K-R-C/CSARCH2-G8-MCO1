@@ -5,38 +5,29 @@ import Input from "../components/shared/Input";
 import Button from "../components/shared/Button";
 import OutputPanel from "../components/shared/OutputPanel";
 
+import { roundAll } from "../utils/rounding";
+import type { RoundingResults, InputType } from "../utils/rounding";
+
+
 export const Rounding: React.FC = () => {
   const [inputValue, setInputValue] = useState("123.456789");
   const [digits, setDigits] = useState("4");
-  const [results, setResults] = useState<{
-    chop: string;
-    roundUp: string;
-    roundDown: string;
-    nearestEven: string;
-  } | null>(null);
+  const [results, setResults] = useState<RoundingResults | null>(null);
+  const [inputType, setInputType] = useState<InputType>("decimal");
 
   const handleRound = () => {
-    const num = parseFloat(inputValue);
-    const d = parseInt(digits, 10) || 4;
+      try {
+          const result = roundAll(
+              inputValue,
+              parseInt(digits, 10),
+              inputType
+          );
 
-    if (Number.isNaN(num)) {
-      setResults({
-        chop: "NaN",
-        roundUp: "NaN",
-        roundDown: "NaN",
-        nearestEven: "NaN",
-      });
-      return;
-    }
-
-    // Default demonstration calculation
-    const factor = Math.pow(10, d - Math.floor(Math.log10(Math.abs(num))) - 1);
-    setResults({
-      chop: (Math.trunc(num * factor) / factor).toString(),
-      roundUp: (Math.ceil(num * factor) / factor).toString(),
-      roundDown: (Math.floor(num * factor) / factor).toString(),
-      nearestEven: num.toFixed(d > 0 ? d - 1 : 0),
-    });
+          setResults(result);
+      }
+      catch {
+          setResults(null);
+      }
   };
 
   return (
@@ -55,6 +46,16 @@ export const Rounding: React.FC = () => {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="e.g. 123.456789"
           />
+          <select
+            value={inputType}
+            onChange={(e) =>
+              setInputType(e.target.value as InputType)
+            }
+            className="border rounded px-3 py-2 w-full"
+          >
+            <option value="decimal">Decimal</option>
+            <option value="binary">Binary</option>
+          </select>
           <Input
             label="Target Digits/Bits"
             type="number"
@@ -71,8 +72,8 @@ export const Rounding: React.FC = () => {
           {results ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <OutputPanel label="Chopping (Truncation)" value={results.chop} badge="Chop" />
-              <OutputPanel label="Round Up (+Infinity)" value={results.roundUp} badge="Up" />
-              <OutputPanel label="Round Down (-Infinity)" value={results.roundDown} badge="Down" />
+              <OutputPanel label="Round Up (+Infinity)" value={results.up} badge="Up" />
+              <OutputPanel label="Round Down (-Infinity)" value={results.down} badge="Down" />
               <OutputPanel label="Round to Nearest (Ties to Even)" value={results.nearestEven} badge="Nearest-Even" highlight />
             </div>
           ) : (
