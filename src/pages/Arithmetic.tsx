@@ -25,18 +25,26 @@ export const Arithmetic: React.FC = () => {
     const valA = parseFloat(operandA);
     const valB = parseFloat(operandB);
 
+    // --- HANDLE SPECIAL CASES (Infinity, NaN, Zero) ---
     if (specialCase !== null) {
       setResultDecimal(specialCase);
-    const specialHexMap: Record<string, string> = {
-      "NaN": "7FC00000",
-      "Infinity": "7F800000",
-      "-Infinity": "FF800000",
-      "+0": "00000000",
-      "-0": "80000000",
-          };
-    const specialHex = specialHexMap[specialCase] || specialCase;
+
+      // Map text to actual IEEE-754 32-bit bit patterns
+      const specialHexMap: Record<string, string> = {
+        "NaN": "7FC00000",
+        "Infinity": "7F800000",
+        "-Infinity": "FF800000",
+        "+0": "00000000",
+        "-0": "80000000",
+      };
+
+      // Determine the correct Hex
+      const specialHex = specialHexMap[specialCase] || specialCase;
       setResultHex(specialHex);
-      setResultBinary(hexToBinary(specialHex, 32));
+
+      // Convert Hex to 32-bit Binary and group it into spaces
+      const rawBin = hexToBinary(specialHex, 32);
+      setResultBinary(rawBin);
 
       setStepTrace([
         {
@@ -55,16 +63,18 @@ export const Arithmetic: React.FC = () => {
           title: "Final Special Result",
           description: "Special case value propagated to final output.",
           type: "final",
-          intermediateResult: specialCase,
+          intermediateResult: `${specialCase} | ${groupBits(rawBin)} | ${specialHex}`,
         },
       ]);
       return;
     }
 
+    // --- HANDLE NORMAL NUMBERS ---
+    // Fallback if parseFloat incorrectly handles "NaN" string
     if (Number.isNaN(valA) || Number.isNaN(valB)) {
       setResultDecimal("NaN");
-      setResultBinary("NaN");
       setResultHex("7FC00000");
+      setResultBinary(hexToBinary("7FC00000", 32));
       return;
     }
 
@@ -72,6 +82,7 @@ export const Arithmetic: React.FC = () => {
     if (operation === "subtraction") {
       finalVal = valA - valB;
     } else {
+      // Math.fround forces 32-bit float precision for division to match IEEE-754
       finalVal = Math.fround(valA / valB);
     }
 
@@ -79,7 +90,6 @@ export const Arithmetic: React.FC = () => {
     const binB = decimalToBinary(valB);
     const finalHex = decimalToHex(finalVal);
     const finalBin = hexToBinary(finalHex, 32);
-
 
     setResultDecimal(finalVal.toString());
     setResultBinary(finalBin);
@@ -108,7 +118,8 @@ export const Arithmetic: React.FC = () => {
         type: "alignment",
         details: [
           { label: "Operation Type", value: operation.toUpperCase(), highlight: true },
-          { label: "Exponent Diff", value: "0" },
+          // Updated label to make it clearer that 0 is an intentional match
+          { label: "Exponent Diff", value: "0 (Exponents match)" },
         ],
       },
       {
@@ -119,7 +130,7 @@ export const Arithmetic: React.FC = () => {
             ? "Perform binary significand subtraction."
             : "Perform restoring/non-restoring significand division.",
         type: "arithmetic",
-        intermediateResult: finalBin,
+        intermediateResult: groupBits(finalBin),
       },
       {
         stepNumber: 4,
