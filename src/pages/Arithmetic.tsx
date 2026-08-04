@@ -27,8 +27,16 @@ export const Arithmetic: React.FC = () => {
 
     if (specialCase !== null) {
       setResultDecimal(specialCase);
-      setResultBinary(specialCase);
-      setResultHex(specialCase);
+    const specialHexMap: Record<string, string> = {
+      "NaN": "7FC00000",
+      "Infinity": "7F800000",
+      "-Infinity": "FF800000",
+      "+0": "00000000",
+      "-0": "80000000",
+          };
+    const specialHex = specialHexMap[specialCase] || specialCase;
+      setResultHex(specialHex);
+      setResultBinary(hexToBinary(specialHex, 32));
 
       setStepTrace([
         {
