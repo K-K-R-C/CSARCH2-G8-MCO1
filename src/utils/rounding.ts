@@ -447,6 +447,14 @@ function rebuildBinary(sign: string,bits: string,binaryPoint: number): string
     }
 
     let point = binaryPoint;
+
+    // Handles carry overflow after rounding
+    // Example: 111 -> 1000
+    if (bits.length > binaryPoint && bits[0] === "1" && point === bits.length - 1)
+    {
+        point++;
+    }
+
     if (point <= 0)
     {
         return sign + "0." + "0".repeat(Math.abs(point)) + bits;
