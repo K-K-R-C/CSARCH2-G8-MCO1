@@ -19,9 +19,9 @@ This project implements **Machine 4: Decimal 32-bit Floating-Point Machine**, si
  
 - **BENDOL, Trisha Mae R.** - Converter Engine
 - **CAMATO, Karl Kristoffer R.** - Rounding Engine
-- **DESCALZO, Alberto Miguel T.** - Arithmetic Engine: Subtraction
-- **GREGORIO, John Marc Joepherl M.** - Arithmetic Engine: Division
-- **MARTIN, Kurt Nehemiah Z.** - Special Cases + Shared Utilities + App Shell
+- **DESCALZO, Alberto Miguel T.** - Special Cases + Shared Utilities + App Shell
+- **GREGORIO, John Marc Joepherl M.** - Arithmetic Engine: Subtraction
+- **MARTIN, Kurt Nehemiah Z.** - Arithmetic Engine: Division
 
 ---
 ### Module 1: Converter Engine
