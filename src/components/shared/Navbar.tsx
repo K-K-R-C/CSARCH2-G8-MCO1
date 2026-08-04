@@ -3,10 +3,10 @@ import { NavLink } from "react-router-dom";
 
 export const Navbar: React.FC = () => {
   const navItems = [
-    { path: "/", label: "Overview", icon: "🏠" },
-    { path: "/converter", label: "Converter", icon: "🔢" },
-    { path: "/rounding", label: "Rounding", icon: "⚖️" },
-    { path: "/arithmetic", label: "Arithmetic", icon: "🧮" },
+    { path: "/", label: "Overview"},
+    { path: "/converter", label: "Converter" },
+    { path: "/rounding", label: "Rounding"},
+    { path: "/arithmetic", label: "Arithmetic"},
   ];
 
   return (
@@ -38,7 +38,6 @@ export const Navbar: React.FC = () => {
                 }`
               }
             >
-              <span>{item.icon}</span>
               <span>{item.label}</span>
             </NavLink>
           ))}

@@ -7,9 +7,7 @@ export const Home: React.FC = () => {
   const modules = [
     {
       title: "Module 1: Converter Engine",
-      member: "Member 1",
       path: "/converter",
-      icon: "🔢",
       color: "from-blue-600/20 to-cyan-600/10 border-blue-500/30 text-blue-400",
       description:
         "Converts decimal numbers into IEEE-754 decimal 32-bit single-precision binary and hexadecimal representations with special case detection.",
@@ -22,9 +20,7 @@ export const Home: React.FC = () => {
     },
     {
       title: "Module 2: Rounding Engine",
-      member: "Member 2",
       path: "/rounding",
-      icon: "⚖️",
       color: "from-purple-600/20 to-pink-600/10 border-purple-500/30 text-purple-400",
       description:
         "Demonstrates four IEEE-754 rounding algorithms on decimal or binary inputs for any target bit/digit count.",
@@ -37,12 +33,10 @@ export const Home: React.FC = () => {
     },
     {
       title: "Module 3: Arithmetic Engine",
-      member: "Members 3 & 4",
       path: "/arithmetic",
-      icon: "🧮",
       color: "from-emerald-600/20 to-teal-600/10 border-emerald-500/30 text-emerald-400",
       description:
-        "Executes Subtraction (Member 3) and Division (Member 4) on IEEE-754 single-precision operands with full step-by-step trace generation.",
+        "Executes Subtraction and Division on IEEE-754 single-precision operands with full step-by-step trace generation.",
       features: [
         "Operand normalization & alignment",
         "Significand subtraction & division",
@@ -98,9 +92,7 @@ export const Home: React.FC = () => {
             <Card key={mod.path} className={`flex flex-col justify-between border bg-slate-900/60 ${mod.color}`}>
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl">{mod.icon}</span>
                   <span className="text-[11px] uppercase font-bold font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-                    {mod.member}
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-slate-100 mb-2">{mod.title}</h3>

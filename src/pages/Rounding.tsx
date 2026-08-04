@@ -34,8 +34,6 @@ export const Rounding: React.FC = () => {
     <div className="space-y-6 max-w-4xl mx-auto">
       <SectionHeader
         title="Module 2: Rounding Engine"
-        description="Demonstrates chopping, round-up, round-down, and round-to-nearest-even on decimal or binary inputs."
-        badge="Member 2 Engine"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
