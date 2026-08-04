@@ -15,9 +15,14 @@ export default function Converter() {
   const [result, setResult] = useState<IEEEResult | null>(null);
 
   // runs when the Convert button is clicked
-  function handleConvert() {
-    let parsed: number = parseFloat(inputValue);
+const [error, setError] = useState<string | null>(null); // new state for error messages
+
+function handleConvert() {
     const trimmed = inputValue.trim().toLowerCase();
+    setError(null); // clear any previous error
+
+    let parsed: number;
+
     if (trimmed === "-0") {
       parsed = -0;
     } else if (trimmed === "nan") {
@@ -26,11 +31,20 @@ export default function Converter() {
       parsed = Infinity;
     } else if (trimmed === "-infinity") {
       parsed = -Infinity;
+    } else if (trimmed === "") {
+      setError("Please enter a decimal value.");
+      return;
+    } else if (Number.isNaN(Number(trimmed))) {
+      // Number() is stricter than parseFloat() - rejects "123abc" too, not just "abc"
+      setError(`"${inputValue}" is not a valid decimal number.`);
+      return;
+    } else {
+      parsed = Number(trimmed);
     }
 
     const converted = convertDecimalToIEEE(parsed);
     setResult(converted);
-  }
+}
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -52,6 +66,9 @@ export default function Converter() {
           <Button onClick={handleConvert} className="w-full">
             Convert to IEEE-754
           </Button>
+            {error && (
+             <p className="text-red-400 text-sm font-medium">{error}</p>
+            )}
         </Card>
 
         <Card title="Conversion Output" className="md:col-span-2 space-y-3">
