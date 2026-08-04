@@ -7,7 +7,7 @@ An interactive simulator for IEEE-754 decimal single-precision conversions, roun
 ## Links
  
 - **Live Deployment:** [IEEE-754 Decimal32](https://k-k-r-c.github.io/CSARCH2-G8-MCO1/?fbclid=IwY2xjawTeyQxwZG9mBWV4dG4DYWVtAjEwAGJyaWQRMTFjQk1BUWM0OWNEZ1RuTWRzcnRjBmFwcF9pZBAyMjIwMzkxNzg4MjAwODkyAAEeudh6d01qIOjKbCvJNOa3BKQhOvBDK4Imwky9JP-mj-nNFMZZNZIolYGfdtg_aem_200ViHRhrqxyBqnZhxg08w)
-- **Video Walkthrough (YouTube):** [Add demo video link here] ()
+- **Video Walkthrough (YouTube):** [Demo](https://youtu.be/uPk0_yXToIE)
 - **GitHub Repository:** [Repo Link](https://github.com/K-K-R-C/CSARCH2-G8-MCO1)
 
 ## Overview
