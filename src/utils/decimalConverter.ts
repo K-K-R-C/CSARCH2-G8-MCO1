@@ -1,4 +1,6 @@
 import { extractSign, extractExponent, extractCoefficient, assembleIEEE, decodeIEEE } from "./ieee754";
+import { isNaNValue, isPositiveInfinity, isNegativeInfinity, isNegativeZero, isPositiveZero, overflow, underflow } from "./specialCases";
+import { binaryToHex } from "./hex";
 
 export interface IEEEResult {
     decimal: number;
@@ -14,54 +16,18 @@ export interface IEEEResult {
 // checks if the decimal is a special case (NaN, Infinity, etc)
 // returns the label as a string if it is, or null if its just a normal number
 function checkSpecialCase(decimal: number): string | null {
-    // NaN check, has its own special function since NaN !== NaN normally
-    if (Number.isNaN(decimal)) return "NaN";
+    if (isNaNValue(decimal)) return "NaN";
+    if (isPositiveInfinity(decimal)) return "Infinity";
+    if (isNegativeInfinity(decimal)) return "-Infinity";
+    if (isNegativeZero(decimal)) return "-0";
+    if (isPositiveZero(decimal)) return "+0";
+    if (overflow(decimal)) return "Overflow";
+    if (underflow(decimal)) return "Underflow";
 
-    // positive and negative infinity
-    if (decimal === Infinity) {
-        return "Infinity";
-    }
-    if (decimal === -Infinity) {
-        return "-Infinity";
-    }
-
-    // -0 needs Object.is since -0 === 0 is true normally (cant tell them apart with ===)
-    if (Object.is(decimal, -0)) {
-        return "-0";
-    }
-    if (decimal === 0) {
-        return "+0";
-    }
-
-    // overflow/underflow: check if number is too big or too small to fit
-    // in float32 range. these are the max/min values float32 can represent
-    const absVal = Math.abs(decimal);
-    const FLOAT32_MAX = 3.4028235e38;
-    const FLOAT32_MIN_NORMAL = 1.1754944e-38;
-
-    if (absVal > FLOAT32_MAX) {
-        return "Overflow";
-    }
-      
-    if (absVal < FLOAT32_MIN_NORMAL) {
-        return "Underflow";
-    }
-       
     // no special case, its a normal number, proceed with regular conversion
     return null;
 }
 
-// TEMPORARY?
-function binaryToHex(binary: string): string {
-    // pad binary to a multiple of 4 (hex digits represent 4 bits each)
-    const paddedBinary = binary.padStart(Math.ceil(binary.length / 4) * 4, "0");
-    let hex = "";
-    for (let i = 0; i < paddedBinary.length; i += 4) {
-        const chunk = paddedBinary.slice(i, i + 4);
-        hex += parseInt(chunk, 2).toString(16).toUpperCase();
-    }
-    return hex;
-}
 
 // builds the result object for special cases (NaN, Infinity, etc)
 // uses predefined bit patterns instead of the normal math functions
