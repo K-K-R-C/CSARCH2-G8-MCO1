@@ -113,13 +113,13 @@ function roundUpDecimal(value: string, digits: number): string
     const truncated = info.digits.substring(0, digits);
     const discarded = info.digits.substring(digits);
 
-    //Positive numbers move upward
+    // Positive numbers move upward
     if (info.sign !== "-" && hasNonZero(discarded))
     {
         return rebuildDecimal("", incrementDigits(truncated), info.decimalIndex, digits);
     }
 
-    //Negative numbers already become smaller as they are truncated
+    // Negative numbers already become smaller as they are truncated
     return rebuildDecimal(info.sign, truncated, info.decimalIndex, digits);
 }
 
@@ -173,7 +173,7 @@ function roundNearestEvenDecimal(value: string, digits: number): string
     }
 
 
-    //Ties to even when halfway
+    // Ties to even when halfway
     const remaining = discarded.substring(1);
 
     if (hasNonZero(remaining))
@@ -428,7 +428,6 @@ function rebuildDecimal(sign: string,digits: string,decimalIndex: number,origina
 function getBinaryInfo(value: string)
 {
     const { sign, integer, fraction } = splitNumber(value);
-
     const bits = integer + fraction;
 
     return {
