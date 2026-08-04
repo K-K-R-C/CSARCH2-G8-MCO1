@@ -6,7 +6,7 @@ import Button from "../components/shared/Button";
 import OutputPanel from "../components/shared/OutputPanel";
 import StepViewer, { type StepItem } from "../components/StepViewer/StepViewer";
 import { propagateSpecialCase } from "../utils/specialCases";
-import { decimalToHex } from "../utils/hex";
+import { decimalToHex, hexToBinary } from "../utils/hex";
 import { groupBits, decimalToBinary } from "../utils/binary";
 
 export const Arithmetic: React.FC = () => {
@@ -69,8 +69,9 @@ export const Arithmetic: React.FC = () => {
 
     const binA = decimalToBinary(valA);
     const binB = decimalToBinary(valB);
-    const finalBin = decimalToBinary(finalVal);
     const finalHex = decimalToHex(finalVal);
+    const finalBin = hexToBinary(finalHex, 32);
+
 
     setResultDecimal(finalVal.toString());
     setResultBinary(finalBin);
