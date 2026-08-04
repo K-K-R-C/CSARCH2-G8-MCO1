@@ -6,7 +6,7 @@ import Button from "../components/shared/Button";
 import OutputPanel from "../components/shared/OutputPanel";
 import StepViewer, { type StepItem } from "../components/StepViewer/StepViewer";
 import { propagateSpecialCase } from "../utils/specialCases";
-import { decimalToHex } from "../utils/hex";
+import { decimalToHex, hexToBinary } from "../utils/hex";
 import { groupBits, decimalToBinary } from "../utils/binary";
 
 export const Arithmetic: React.FC = () => {
@@ -64,13 +64,14 @@ export const Arithmetic: React.FC = () => {
     if (operation === "subtraction") {
       finalVal = valA - valB;
     } else {
-      finalVal = valA / valB;
+      finalVal = Math.fround(valA / valB);
     }
 
     const binA = decimalToBinary(valA);
     const binB = decimalToBinary(valB);
-    const finalBin = decimalToBinary(finalVal);
     const finalHex = decimalToHex(finalVal);
+    const finalBin = hexToBinary(finalHex, 32);
+
 
     setResultDecimal(finalVal.toString());
     setResultBinary(finalBin);
@@ -136,8 +137,6 @@ export const Arithmetic: React.FC = () => {
     <div className="space-y-6 max-w-5xl mx-auto">
       <SectionHeader
         title="Module 3: Arithmetic Engine"
-        description="Performs Subtraction (Member 3) and Division (Member 4) with detailed step-by-step trace."
-        badge="Members 3 & 4 Engine"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
