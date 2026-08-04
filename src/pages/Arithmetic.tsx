@@ -136,8 +136,6 @@ export const Arithmetic: React.FC = () => {
     <div className="space-y-6 max-w-5xl mx-auto">
       <SectionHeader
         title="Module 3: Arithmetic Engine"
-        description="Performs Subtraction (Member 3) and Division (Member 4) with detailed step-by-step trace."
-        badge="Members 3 & 4 Engine"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
