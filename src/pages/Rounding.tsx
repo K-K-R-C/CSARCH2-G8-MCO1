@@ -16,19 +16,25 @@ export const Rounding: React.FC = () => {
   const [inputType, setInputType] = useState<InputType>("decimal");
   const [error, setError] = useState<string | null>(null);
 
+  // Handles the rounding operation when the button is clicked.
+  // Passes the input value, target digits/bits, and input type to the rounding engine.
   const handleRound = () => {
       try {
+          // Clears any previous error message before running a new calculation.
           setError(null);
 
+          // Applies all four rounding methods to the given input.
           const result = roundAll(
               inputValue,
               parseInt(digits, 10),
               inputType
           );
 
+          // Stores the rounding results to display them on the UI.
           setResults(result);
       }
       catch(error) {
+          // Clears previous results and displays the validation error.
           setResults(null);
           setError((error as Error).message);
       }
